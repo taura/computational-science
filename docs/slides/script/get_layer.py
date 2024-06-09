@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 import xml.sax
@@ -34,7 +34,7 @@ def id_of_nth_layer(svg_file, n):
         return None
 
 def main():
-    # sys.stderr.write("%s\n" % sys.argv)
+    #sys.stderr.write("%s\n" % sys.argv)
     l = len(sys.argv)
     if l == 1:
         p = sys.argv[0]
@@ -48,7 +48,7 @@ def main():
         cmd = sys.argv[1]
         if cmd == "num":
             svg_file = sys.argv[2]
-            print num_layers(svg_file)
+            print(num_layers(svg_file))
             return 0
         elif cmd == "check":
             svg_file = sys.argv[2]
@@ -57,7 +57,7 @@ def main():
             if name is None:
                 return 1
             else:
-                print sys.argv[4]
+                print(sys.argv[4])
                 return 0
         elif cmd == "id":
             svg_file = sys.argv[2]
@@ -66,7 +66,7 @@ def main():
             if name is None:
                 return 1
             else:
-                print name
+                print(name)
                 return 0
         else:
             assert 0,cmd

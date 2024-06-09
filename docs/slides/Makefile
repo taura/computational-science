@@ -8,15 +8,18 @@
 # (2) make
 #
 latex := platex
-bibtex := bibtex
+#bibtex := bibtex
+bibtex := biber
 run_bibtex_and_latex_twice:=n
 
 # tex files
-tex := $(wildcard taura_lecture.tex)
+tex := $(wildcard *.tex)
 # svg files
-svg_svg := $(wildcard svg/*.svg)
+#svg_svg := $(wildcard svg/*.svg)
+svg_svg := $(wildcard svg/reduction.svg)
 # layered svg files
-lsvg_svg := $(wildcard lsvg/*.svg)
+#lsvg_svg := $(wildcard lsvg/*.svg)
+#lsvg_svg := $(wildcard svg/*.svg)
 # odg files
 odg_odg := $(wildcard odg/*.odg)
 # dot files
@@ -33,74 +36,77 @@ img_pdf := $(wildcard img/*.pdf)
 data_py := $(wildcard data/*/*.py)
 #
 dvi := $(tex:.tex=.dvi)
+chk_fig := $(tex:.tex=.chk_fig)
 pdf := $(patsubst %.dvi,pdf/%.pdf,$(dvi))
 
 # ----- files generated and included -------------------------
 deps := 
 
 # tex/pdf/eps files from svg files
-svg_tex := $(patsubst %.svg,out/tex/%.pdf,$(svg_svg))
+svg_tex := $(patsubst %.svg,out/tex/%.pdf_tex,$(svg_svg))
 svg_pdf := $(patsubst %.svg,out/pdf/%.pdf,$(svg_svg))
-svg_eps := $(patsubst %.svg,out/eps/%.eps,$(svg_svg))
+#svg_eps := $(patsubst %.svg,out/eps/%.eps,$(svg_svg))
+svg_eps := 
 deps += $(svg_tex)
 deps += $(svg_pdf)
-#deps += $(svg_eps)
+deps += $(svg_eps)
 
 # tex/pdf/eps files from layered svg files
-lsvg_tex := $(foreach prefix,$(patsubst %.svg,%,$(lsvg_svg)),$(foreach i,$(shell seq 1 $(shell ./script/get_layer.py num $(prefix).svg)),out/tex/$(prefix)_$(i).pdf))
-lsvg_pdf := $(foreach prefix,$(patsubst %.svg,%,$(lsvg_svg)),$(foreach i,$(shell seq 1 $(shell ./script/get_layer.py num $(prefix).svg)),out/pdf/$(prefix)_$(i).pdf))
-lsvg_eps := $(foreach prefix,$(patsubst %.svg,%,$(lsvg_svg)),$(foreach i,$(shell seq 1 $(shell ./script/get_layer.py num $(prefix).svg)),out/eps/$(prefix)_$(i).eps))
-#deps += $(lsvg_tex)
-deps += $(lsvg_pdf)
-#deps += $(lsvg_eps)
+svg_layer_svg := $(foreach prefix,$(patsubst %.svg,%,$(svg_svg)),$(foreach i,$(shell seq 1 $(shell ./script/get_layer.py num $(prefix).svg)),out/svg/$(prefix)_$(i).svg))
+svg_layer_tex := $(patsubst out/svg/%.svg,out/tex/%.pdf_tex,$(svg_layer_svg))
+svg_layer_pdf := $(patsubst out/svg/%.svg,out/pdf/%.pdf,$(svg_layer_svg))
+svg_layer_eps := $(patsubst out/svg/%.svg,out/eps/%.eps,$(svg_layer_svg))
+deps += $(svg_layer_tex)
+deps += $(svg_layer_pdf)
+#deps += $(svg_layer_eps)
 
 # pdf/eps files from odg files
 odg_pdf := $(patsubst %.odg,out/pdf/%.pdf,$(odg_odg))
 odg_eps := $(patsubst %.odg,out/eps/%.eps,$(odg_odg))
 deps += $(odg_pdf)
-#deps += $(odg_eps)
+deps += $(odg_eps)
 
 # pdf/eps files from dot files
 dot_pdf := $(patsubst %.dot,out/pdf/%.pdf,$(dot_dot))
 dot_eps := $(patsubst %.dot,out/eps/%.eps,$(dot_dot))
-dot_tex := $(patsubst %.dot,out/tex/%.pdf,$(dot_dot))
+dot_tex := $(patsubst %.dot,out/tex/%.pdf_tex,$(dot_dot))
 deps += $(dot_pdf)
-#deps += $(dot_eps)
+deps += $(dot_eps)
 deps += $(dot_tex)
 
 # tex/pdf/eps files from gpl files
 gpl_tex := $(patsubst %.gpl,out/tex/%.tex,$(gpl_gpl))
 gpl_pdf := $(patsubst %.gpl,out/pdf/%.pdf,$(gpl_gpl))
-#gpl_eps := $(patsubst %.gpl,out/eps/%.eps,$(gpl_gpl))
+gpl_eps := $(patsubst %.gpl,out/eps/%.eps,$(gpl_gpl))
 deps += $(gpl_tex)
 deps += $(gpl_pdf)
-#deps += $(gpl_eps)
+deps += $(gpl_eps)
 
 # pdf/eps files from img files
 img_jpg_pdf := $(patsubst %.jpg,out/pdf/%.pdf,$(img_jpg))
 img_jpg_eps := $(patsubst %.jpg,out/eps/%.eps,$(img_jpg))
 deps += $(img_jpg_pdf)
-#deps += $(img_jpg_eps)
+deps += $(img_jpg_eps)
 
 img_png_pdf := $(patsubst %.png,out/pdf/%.pdf,$(img_png))
 img_png_eps := $(patsubst %.png,out/eps/%.eps,$(img_png))
 deps += $(img_png_pdf)
-#deps += $(img_png_eps)
+deps += $(img_png_eps)
 
 img_gif_pdf := $(patsubst %.gif,out/pdf/%.pdf,$(img_gif))
 img_gif_eps := $(patsubst %.gif,out/eps/%.eps,$(img_gif))
 deps += $(img_gif_pdf)
-#deps += $(img_gif_eps)
+deps += $(img_gif_eps)
 
 img_eps_pdf := $(patsubst %.eps,out/pdf/%.pdf,$(img_eps))
 img_eps_eps := $(patsubst %.eps,out/eps/%.eps,$(img_eps))
 deps += $(img_eps_pdf)
-#deps += $(img_eps_eps)
+deps += $(img_eps_eps)
 
 img_pdf_pdf := $(patsubst %.pdf,out/pdf/%.pdf,$(img_pdf))
 img_pdf_eps := $(patsubst %.pdf,out/eps/%.eps,$(img_pdf))
 deps += $(img_pdf_pdf)
-#deps += $(img_pdf_eps)
+deps += $(img_pdf_eps)
 
 data_tex := $(patsubst %.py,out/tex/%.tex_ok,$(data_py))
 deps += $(data_tex)
@@ -108,17 +114,26 @@ deps += $(data_tex)
 # ------------------------------
 
 all : $(pdf)
+chk : $(chk_fig)
 
 $(pdf) : pdf/%.pdf : %.dvi
 	mkdir -p $(dir $@)
 	TTFONTS=/usr/share/fonts/truetype// dvipdfmx -f misc/font.map -o $@ $<
+
+out/figs_cache : $(deps)
+	mkdir -p $(dir $@)
+	rm -f $@
+	for x in $(deps) ; do echo $$x >> $@ ; done
+
+$(chk_fig) : %.chk_fig : %.tex Makefile
+	./script/check_include.py $<
 
 $(dvi) : %.dvi : %.tex $(deps) Makefile
 # -shell-escape is to generate xbb
 	rm -f out/*/*/*.xbb
 	TEXINPUTS=classes: $(latex) -shell-escape $<
 ifeq ($(run_bibtex_and_latex_twice),y)
-	BSTINPUTS=classes: $(bibtex) $*
+	BSTINPUTS=classes: $(bibtex) --sortdebug $*
 	TEXINPUTS=classes: $(latex) -shell-escape $<
 	TEXINPUTS=classes: $(latex) -shell-escape $<
 endif
@@ -126,40 +141,49 @@ endif
 # ------------------------------
 
 # svg -> tex+pdf
-$(svg_tex) : out/tex/%.pdf : %.svg
+$(svg_tex) : out/tex/%.pdf_tex : %.svg
 	mkdir -p $(dir $@)
-	inkscape -D -z --file=$< --export-pdf=$@ --export-latex
+#	inkscape -D -z --file=$< --export-pdf=out/tex/$*.pdf --export-latex
+	inkscape $< -o out/tex/$*.pdf --export-type=pdf --export-latex
 
 # svg -> (standalone) pdf
-
 $(svg_pdf) : out/pdf/%.pdf : %.svg
 	mkdir -p $(dir $@)
-	inkscape -D -z --file=$< --export-pdf=$@
+#	inkscape -D -z --file=$< --export-pdf=$@
+	inkscape $< --export-type=pdf -o $@
 
 # svg -> eps
 $(svg_eps) : out/eps/%.eps : %.svg
 	mkdir -p $(dir $@)
-	inkscape -D -z --file=$< --export-eps=$@
+#	inkscape -D -z --file=$< --export-eps=$@
+	inkscape $< --export-type=eps -o $@
 
-define lsvg_tex_pdf_eps_rule
-# layered svg -> tex+pdf
-out/tex/$(1)_$(2).pdf : out/tex/%_$(2).pdf : %.svg
-	mkdir -p $(dir out/tex/$(1)_$(2).pdf)
-	inkscape -D -z --file=$$< --export-pdf=$$@ --export-id=$(3) --export-id-only --export-latex # layer=$(2)
-# layered svg -> (standalone) pdf
-out/pdf/$(1)_$(2).pdf : out/pdf/%_$(2).pdf : %.svg
-	mkdir -p $(dir out/pdf/$(1)_$(2).pdf)
-	inkscape -D -z --file=$$< --export-pdf=$$@ --export-id=$(3) --export-id-only # layer=$(2)
+define svg_layer_tex_pdf_eps_rule
+# layered svg -> unlayered svg
+out/svg/$(1)_$(2).svg : out/svg/%_$(2).svg : %.svg
+	mkdir -p $$(dir $$@)
+#	inkscape -D -z --file=$$< --export-plain-svg=$$@ --export-id=$(3) --export-id-only # layer=$(2)
+	inkscape $$< --export-plain-svg -o $$@ --export-id=$(3) --export-id-only # layer=$(2)
+# unlayered svg -> tex+pdf
+out/tex/$(1)_$(2).pdf_tex : out/tex/%_$(2).pdf_tex : out/svg/%_$(2).svg
+	mkdir -p $$(dir $$@)
+#	inkscape -D -z --file=$$< --export-pdf=out/tex/$$*_$(2).pdf --export-latex # layer=$(2)
+	inkscape $$< --export-type=pdf --export-latex -o out/tex/$$*_$(2).pdf # layer=$(2)
+# unlayered svg -> (standalone) pdf
+out/pdf/$(1)_$(2).pdf : out/pdf/%_$(2).pdf : out/svg/%_$(2).svg
+	mkdir -p $$(dir $$@)
+#	inkscape -D -z --file=$$< --export-pdf=$$@ # layer=$(2)
+	inkscape $$< --export-type=pdf -o $$@ # layer=$(2)
 # layered svg -> eps
-out/eps/$(1)_$(2).eps : out/eps/%_$(2).eps : %.svg
-	mkdir -p $(dir out/eps/$(1)_$(2).eps)
-	inkscape -D -z --file=$$< --export-eps=$$@ --export-id=$(3) --export-id-only # layer=$(2)
+out/eps/$(1)_$(2).eps : out/eps/%_$(2).eps : out/svg/%_$(2).svg
+	mkdir -p $$(dir $$@)
+#	inkscape -D -z --file=$$< --export-eps=$$@ # layer=$(2)
+	inkscape $$< --export-type=eps -o $$@ # layer=$(2)
 endef
 
-$(foreach svg,$(lsvg_svg),\
+$(foreach svg,$(svg_svg),\
 	$(foreach i,$(shell seq 1 $(shell ./script/get_layer.py num $(svg))),\
-	$(eval $(call lsvg_tex_pdf_eps_rule,$(patsubst %.svg,%,$(svg)),$(i),$(shell ./script/get_layer.py id $(svg) $(i))))))
-
+	$(eval $(call svg_layer_tex_pdf_eps_rule,$(patsubst %.svg,%,$(svg)),$(i),$(shell ./script/get_layer.py id $(svg) $(i))))))
 
 # odg -> pdf
 $(odg_pdf) : out/pdf/%.pdf : %.odg
@@ -182,10 +206,10 @@ $(dot_eps) : out/eps/%.eps : %.dot
 	dot -Teps -o $@ $<
 
 # dot -> pdf_tex
-$(dot_tex) : out/tex/%.pdf : %.dot
+$(dot_tex) : out/tex/%.pdf_tex : %.dot
 	mkdir -p $(dir $@)
 	dot -Tsvg -o out/tex/$*.svg $<
-	inkscape -D -z --file=out/tex/$*.svg --export-pdf=$@ --export-latex
+	inkscape -D -z --file=out/tex/$*.svg --export-pdf=out/tex/$*.pdf --export-latex
 
 # gpl -> tex + eps files
 $(gpl_tex) : out/tex/%.tex : %.gpl
@@ -268,23 +292,27 @@ clean :
 	rm -f *.vrb
 	rm -f *.blg
 	rm -f *.bbl
+	rm -f *.run.xml
+	rm -f *.bcf
 
 delete :
 	rm -f dot/graph.dot
+	rmdir dot
 	rm -f gpl/sin.gpl
+	rmdir gpl
 	rm -f img/linux-blue.png 
 	rm -f img/linux-orange.gif 
 	rm -f img/linux-penguin.jpg
-	rm -f odg/face.odg
-	rm -f svg/ball.svg
-	rm -f lsvg/layer.svg
-	rmdir data
-	rmdir dot
-	rmdir gpl
 	rmdir img
+	rm -f odg/face.odg
 	rmdir odg
+	rm -f svg/ball.svg
+	rm -f svg/layer.svg
 	rmdir svg
-	rmdir lsvg
+	rm -f data/x
+	rmdir data
 
 delx :
 	rm -f out/*/*/*.xbb
+
+

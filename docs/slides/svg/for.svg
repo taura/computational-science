@@ -2,19 +2,19 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="264.99316mm"
    height="339.10941mm"
    id="svg2"
    version="1.1"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="for.svg">
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="for.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
     <marker
@@ -40,8 +40,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="362.42457"
-     inkscape:cy="773.53631"
+     inkscape:cx="363.14984"
+     inkscape:cy="935.40126"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -50,12 +50,15 @@
      inkscape:window-width="1848"
      inkscape:window-height="1016"
      inkscape:window-x="72"
-     inkscape:window-y="27"
+     inkscape:window-y="32"
      inkscape:window-maximized="0"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0">
+     fit-margin-bottom="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
        id="grid2985"
@@ -156,17 +159,6 @@
        id="path4262"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="czzzzc" />
-    <text
-       id="text4264"
-       y="-130.49496"
-       x="111.42857"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       xml:space="preserve"><tspan
-         style="font-style:italic;font-size:48px;line-height:1.25"
-         y="-130.49496"
-         x="111.42857"
-         id="tspan4266"
-         sodipodi:role="line">...</tspan></text>
     <rect
        y="732.36218"
        x="196"
@@ -180,17 +172,6 @@
        id="path4280"
        d="m 280,752.36218 c 0,54.97474 -60,-14.97474 -60,40 0,54.97474 96,-14.97474 96,40 0,54.97472 -93.22443,-2.14135 -96,40.00002 -2.77557,42.1413 41.19479,21.6482 48,40 6.80521,18.3517 0,80 0,80"
        style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:3.09838676;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-end:url(#Arrow1Lend);enable-background:accumulate" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="111.42857"
-       y="869.505"
-       id="text4282"><tspan
-         sodipodi:role="line"
-         id="tspan4284"
-         x="111.42857"
-         y="869.505"
-         style="font-style:italic;font-size:48px;line-height:1.25">...</tspan></text>
     <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:4.61880207;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-end:url(#Arrow1Lend);enable-background:accumulate"
        d="M 240,12.362183 V 172.36218"
@@ -228,17 +209,6 @@
        height="130.15752"
        x="160"
        y="292.36218" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="251.42859"
-       y="335.21933"
-       id="text3019"><tspan
-         sodipodi:role="line"
-         x="251.42859"
-         y="335.21933"
-         id="tspan3018"
-         style="font-size:40px;line-height:1.25;fill:#0000ff">\ao{\tt\#pragma omp for}</tspan></text>
     <rect
        style="fill:#ffff00;fill-opacity:1;stroke:#000000;stroke-width:1.7370863;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect3028"
@@ -246,28 +216,6 @@
        height="79.880791"
        x="160"
        y="-7.4802961" />
-    <text
-       id="text3020"
-       y="39.21933"
-       x="249.99858"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-       xml:space="preserve"><tspan
-         id="tspan3024"
-         y="39.21933"
-         x="249.99858"
-         sodipodi:role="line"
-         style="font-size:40px;line-height:1.25;text-align:start;text-anchor:start;fill:#0000ff">\ao{\tt \#pragma omp parallel}</tspan></text>
-    <text
-       id="text3027"
-       y="383.21933"
-       x="251.42859"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       xml:space="preserve"><tspan
-         style="font-size:40px;line-height:1.25;fill:#000000"
-         id="tspan3029"
-         y="383.21933"
-         x="251.42859"
-         sodipodi:role="line">  {\tt for (i = 0; i &lt; n; i++) \{  ...  \} }</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:24px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
