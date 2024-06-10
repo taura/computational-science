@@ -118,8 +118,7 @@ escapechar=\@,
 \title{計算科学概論 \\
   --- 高性能プログラミングと性能測定}
 \institute{工学部 電子情報工学科 \\
-  情報理工学系研究科 電子情報学専攻 \\
-  情報基盤センター}
+  情報理工学系研究科 電子情報学専攻}
 \author{田浦健次朗}
 % \author{田浦健次朗 \\
 %   {\scriptsize\url{https://www.eidos.ic.i.u-tokyo.ac.jp/~tau/lecture/cs_alliance/}} \\
@@ -307,12 +306,20 @@ for (i = 0; i < n; i++) {
 \begin{itemize}
 \item ノード内(共有メモリマルチコア)上での並列プログラミング言語の,
   事実上の標準
+\item 最近はGPUもサポートしている
+  \begin{itemize}
+  \item 本演習ではそのこともありOpenMPでCPU, GPUプログラミングを行う
+  \end{itemize}
 \item C/C++/Fortran + \ao{並列指示構文(directive) + APIs}
   \begin{itemize}
   \item C/C++では\ao{\tt \#pragma}, 
   \item Fortranではコメントで
   \end{itemize}
-\item GCC, ICCはじめ多くのコンパイラでサポート
+\item GCC, ICC, Clang (LLVM), NVIDIAはじめ多くのコンパイラでサポート
+  \begin{itemize}
+  \item 本演習ではGPUもサポートしているNVIDIAコンパイラを使ってみる
+    (自分の好きなのを使って良い)
+  \end{itemize}
 \end{itemize}
 \end{column}
 \begin{column}{0.4\textwidth}
@@ -339,14 +346,20 @@ for (i = 0; i < n; i++) {
 
 %%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile]
-\frametitle{OpenMPプログラムのコンパイルと実行}
+\frametitle{OpenMPプログラムのコンパイルと実行 (GCC)}
 
 \begin{itemize}
-\item コンパイル時に{\tt -fopenmp}オプション
+\item GCC: コンパイル時に{\tt -fopenmp}オプション
 \begin{lstlisting}
-$ gcc -Wall @\ao{\tt -fopenmp}@ program.c
+$ gcc -Wall @\ao{\tt -fopenmp}@ program.c   # C++ は g++
 \end{lstlisting}
 %$
+\item NVIDIA HPC SDK (nvc, nvc++): コンパイル時に{\tt -mp=multicore}オプション
+\begin{lstlisting}
+$ nvc @\ao{\tt -mp=multicore}@ program.c    # C++ は nvc++
+\end{lstlisting}
+%$
+
 \item 実行時に, {\tt OMP\_NUM\_THREADS}環境変数で,
   使うスレッド数(コア数と思ってよい)を指定
 \begin{lstlisting}
@@ -371,6 +384,7 @@ $ @\ao{\tt OMP\_NUM\_THREADS=4}@ ./a.out  # use 4 threads
 \end{lstlisting} %$
 \end{itemize}
 \end{frame}
+
 
 %=================================
 \subsection{{\tt parallel} pragma}
