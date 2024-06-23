@@ -1243,7 +1243,179 @@ interact_all(n, particle *p) {
 %%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{GPUプログラミング vs. CPU (だけの)プログラミング}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{enumerate}
+      \item CPUとGPUは別のマシン
+        \begin{itemize}
+        \item $\Rightarrow$ どこをGPUで実行(にオフロード)するかを指定する必要がある
+          (\ao{\tt \#pragma omp target})
+        \end{itemize}
+      \item CPU$\leftarrow$GPU間でメモリが(ハードウェアで)共有されているわけではない
+        \begin{itemize}
+        \item $\Rightarrow$ データを明示的に移動させる必要がある(場合がある)
+          (\ao{\tt map}節)
+        \item 注: 最近のハードウェアでは不要になりつつある
+        \end{itemize}
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\textwidth]{out/pdf/svg/diagram_cpu_gpu_1.pdf}
+    \end{column}
+  \end{columns}
+\end{frame}
 
+%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{CPU vs. GPU : アーキテクチャ・特性の違い}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+      \item<1-> 共通点: マルチコア並列性
+        \begin{itemize}
+        \item GPUのStreaming Multiprocessor $\approx$ CPUのコア
+        \end{itemize}
+      \item<2-> 主な違い: コア内の性能(並列性)向上手段
+        \begin{itemize}
+        \item GPU
+          \begin{itemize}
+          \item 多数の「スレッド」をオーバーラップ実行
+          \end{itemize}
+        \item CPU
+          \begin{itemize}
+          \item 1命令で多数の演算を実行(SIMD)
+          \item 1スレッド内の多数の命令をオーバーラップ実行(ILP)
+          \end{itemize}
+        \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \only<1>{\includegraphics[width=\textwidth]{out/pdf/svg/diagram_cpu_gpu_1.pdf}}%
+      \only<2>{\includegraphics[width=\textwidth]{out/pdf/svg/diagram_cpu_gpu_2.pdf}}%
+      \only<3->{\includegraphics[width=\textwidth]{out/pdf/svg/diagram_cpu_gpu_3.pdf}}%
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{GPU「1コア内の多数のスレッド」の意味}
+  \begin{itemize}
+  \item<1-> 各命令の結果が出るには数〜数百クロックの時間がかかり,
+    GPUの各スレッドは先の命令が終わるまで次の命令の実行はできない
+  \item<1-> $\Rightarrow$ 1スレッドだけではコアの性能をほとんど生かせない
+    \begin{itemize}
+    \item 比喩: ガラガラの高速道路. いくら空いていても1台の車が,
+      東京から大阪まで行く時間は1時間以内にはならない
+    \end{itemize}
+  \item<2-> そこでGPUは多数のスレッドを少しずつ前進させて性能を稼ぐ
+    \begin{itemize}
+    \item 比喩: 混んでる高速道路. 渋滞はあるかもしれないが, 
+      単位時間あたりに運ぶ荷物(人)の量は増える
+    \end{itemize}
+  \item<3-> GPUハードウェアは多数のスレッドを細かい時間スケール
+    (e.g., クロックごと)でかわりばんこに実行
+  \end{itemize}
+
+\begin{center}
+\only<1>{\includegraphics[width=0.6\textwidth]{out/pdf/svg/latency_1.pdf}}%
+\only<2->{\includegraphics[width=0.6\textwidth]{out/pdf/svg/latency_2.pdf}}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{対比: CPU「1スレッド内の並列性」}
+  \begin{itemize}
+  \item GPUが常に「スレッド」で並列性を抽出するのに対し,
+    CPUは1コア内のスレッド数はわずか(1〜数個)
+  \item 変わりに1スレッド内の命令で多数の並列性を抽出する
+    \begin{itemize}
+    \item SIMD : 1つの命令で多数の演算
+    \item 命令レベル並列 : 依存関係のない(先行命令の結果を待たなくても実行できる)
+      命令をオーバーラップして実行
+    \end{itemize}
+  \end{itemize}
+
+\begin{center}
+\only<1>{\includegraphics[width=0.6\textwidth]{out/pdf/svg/latency_3.pdf}}%
+\only<2->{\includegraphics[width=0.6\textwidth]{out/pdf/svg/latency_2.pdf}}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{OpenMPプログラミングで出現する構文(1) --- 制御の移動, スレッド生成}
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{itemize}
+      \item<2-> \ao{\tt \#pragma omp target} 実行をGPUに「移す」
+      \item<3-> \ao{\tt \#pragma omp teams} GPUに多数の「チーム」を作る
+        \begin{itemize}
+        \item 1チームは1つのStreaming Multiprocessor上で実行
+        \end{itemize}
+      \item<3-> \ao{\tt \#pragma omp distribute} for文の繰り返しを多数のチームで分割
+      \item<4-> 以下はCPUでも既出
+      \item<4-> {\tt \#pragma omp parallel} 各チームに多数の「スレッド」を作る
+      \item<4-> {\tt \#pragma omp for} for文の繰り返しを多数のスレッドで分割
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \only<1>{\includegraphics[width=\textwidth]{out/pdf/svg/diagram_gpu_concepts_1.pdf}}%
+      \only<2>{\includegraphics[width=\textwidth]{out/pdf/svg/diagram_gpu_concepts_2.pdf}}%
+      \only<3>{\includegraphics[width=\textwidth]{out/pdf/svg/diagram_gpu_concepts_3.pdf}}%
+      \only<4>{\includegraphics[width=\textwidth]{out/pdf/svg/diagram_gpu_concepts_4.pdf}}%
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{OpenMPプログラミングで出現する構文(2) --- データマッピング}
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{itemize}
+      \item \ao{\tt \#pragma omp target map(to:$ x$)}
+        $x$をtarget実行に先立ち, 正しくする($\approx$ CPU $\rightarrow$ GPU転送)
+      \item \ao{\tt \#pragma omp target map(from:$ x$)}
+        $x$をtarget実行後, 正しくする($\approx$ GPU $\rightarrow$ CPU転送)
+      \item \ao{\tt \#pragma omp target map(tofrom:$ x$)}
+        {\tt to:}, {\tt from:}両方の効果
+      \item 注: 実行をGPUに移さずにデータだけを移す指令
+        \ao{\tt \#pragma omp target data map(...)}もある
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \includegraphics[width=\textwidth]{out/pdf/svg/diagram_gpu_concepts_5.pdf}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{頻出単純パターン}
+  \begin{itemize}
+  \item GPU全体を使って並列実行
+    \begin{lstlisting}
+@\ao{\tt \#pragma omp target teams distribute parallel for num\_teams(..) num\_threads(..) map(...)}@
+for (i = 0; i < ...; i++) {
+  ...
+}  
+\end{lstlisting}
+\item キーワードの多さにめまいがするが,
+  \begin{itemize}
+  \item CPUの {\tt parallel} (スレッド生成) $+$ {\tt for} (ループの分割)
+    の組合わせに加え, 
+  \item GPUでは {\tt teams} (スレッド生成) $+$ {\tt distributed} (ループの分割)
+    の組合わせが加わる
+  \end{itemize}
+  と思えば良い
+\item CPUではチームは1つだけと決まっていると思っても良い
+\end{itemize}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%
 \section{CPUの性能}
@@ -1829,8 +2001,7 @@ real interact_all(long n, particle * p) {
   \item ReedbushのCPUは Broadwell というマイクロアーキテクチャで \ao{AVX2}
     までをサポート
 \fi
-  \item Oakbridge CXのCPUは Cascade Lake というマイクロアーキテクチャで \ao{AVX-512}
-    までをサポート
+\item 最近は \ao{AVX-512} までをサポート
     
   \item 自分で書ける必要はないが「どんなコードがSIMD化できるのか」
     を知る, 無事SIMD化できたかを判断できるようになる必要がある
@@ -2085,7 +2256,7 @@ for (i = 0; i < n; i++) {
   \item OpenMP/Cilk PlusのSIMD指示構文
   \item Cilk Plusの配列構文
   \end{itemize}
-\item \ao{GCC/ICCベクタ拡張}
+\item \ao{ベクトル型拡張}
 \item \ao{intrinsics関数} 
 \item アセンブリ
 \end{enumerate}
@@ -2102,7 +2273,7 @@ for (i = 0; i < n; i++) {
     CPUの特性に合わせたプログラムやデータの書き換えが必要なことも多い
   \item この授業では目的に鑑みて, 低水準だが直截な方法を中心に扱う
     \begin{itemize}
-\item \ao{GCC/ICCベクタ拡張}
+\item \ao{ベクトル型拡張}
 \item \ao{intrinsics関数} 
     \end{itemize}
     
@@ -2114,15 +2285,15 @@ for (i = 0; i < n; i++) {
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\subsection{GCCのベクトル型拡張}
+\subsection{ベクトル型拡張}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile]
-\frametitle{GCCのベクトル型}
+\frametitle{ベクトル型}
 \begin{itemize}
-\item GCCでは以下のようにして(SIMD)ベクトル型を定義可能
+\item 以下のようにして(SIMD)ベクトル型を定義可能
 \begin{lstlisting}
 typedef float floatv @\ao{\tt \_\_attribute\_\_((vector\_size(64),aligned(sizeof(float))))};
 \end{lstlisting}
@@ -2130,16 +2301,16 @@ typedef float floatv @\ao{\tt \_\_attribute\_\_((vector\_size(64),aligned(sizeof
 \item {\tt floatv}という新しい型が定義され, {\tt float}を16つ (64バイト分)
   並べたもの, という意味になる
   
-\item 注: Intel C Compiler (ICC)でも使えます
+\item GCC, Clang, NVIDIA HPC SDK, Intel C Compiler (ICC)などで使える
 
 \item 通常の四則演算がベクトル型に対しても可能
-  (そして, 当然SIMD命令が使われるだろうと確信できる)
+  \ao{(そして, SIMD命令が使われるだろうと確信できる)}
 \begin{lstlisting}
 floatv x, y, z;
 z += x * y;
 \end{lstlisting}
 
-\item 最近のGCCはスカラーとベクトルの混合も許す (ICCはダメ)
+\item 多くのコンパイラはスカラーとベクトルの混合も許す
 \begin{lstlisting}
 floatv x, y, z;
 z = 3.5 * x + y;
@@ -2148,11 +2319,53 @@ z = 3.5 * x + y;
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\begin{frame}[fragile]
-  \frametitle{実際に生成されたコードを見てみる}
+\begin{frame}
+  \frametitle{ベクトル化する上での有用オプション}
   \begin{itemize}
-  \item コンパイラの\ao{\texttt{-S}}オプション(アセンブリコード
-    (\ao{\texttt{.s}})生成)とお友達になる
+  \item \ao{\tt -fast} : ベクトル化を含めた最適化
+  \item \ao{\tt -Minfo} : ベクトル化されたループを報告
+  \item \ao{\tt -Mneginfo} : ベクトル化できなかったループを報告
+  \item だがベクトル化が首尾よく行ったかどうかを確かめる方法は
+    アセンブリコードを見ること
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile]
+  \frametitle{生成されたアセンブリコードを見る}
+  \begin{itemize}
+  \item NVIDIAコンパイラは
+    \begin{itemize}
+    \item \ao{\tt -Mkeepasm} で, 生成されたアセンブリコード(\ao{\texttt{.s}})を残す
+    \end{itemize}
+  \item 使い方
+    \begin{itemize}
+    \item 小さな関数を書いて生成されたコードを見る(コンパイラの能力を探る)
+\begin{lstlisting}
+float  plus(float x, float y) { return x + y; }
+floatv plusv(floatv x, floatv y) { return x + y; }
+\end{lstlisting}
+\item ベクトル化してほしい部分(e.g., 最内ループ)に以下を埋め込みアセンブリ言語の中で検索
+  (\texttt{asm volatile("...")}は"..."をアセンブリに埋め込む構文).
+\begin{lstlisting}
+@\ao{\texttt{asm volatile("\# start my loop");}}@
+for (...) {
+   ...注目部分...
+}
+@\ao{\texttt{asm volatile("\# end my loop");}}@
+\end{lstlisting}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\iffalse
+\begin{frame}[fragile]
+  \frametitle{生成されたアセンブリコードを見る}
+  \begin{itemize}
+  \item 多くのコンパイラは\ao{\texttt{-S}}オプションで,
+    アセンブリコード(\ao{\texttt{.s}})を生成
   \item \texttt{-S}オプションで学習
     \begin{itemize}
     \item 小さな関数を書いて生成されたコードを見る
@@ -2160,7 +2373,7 @@ z = 3.5 * x + y;
 float  plus(float x, float y) { return x + y; }
 floatv plusv(floatv x, floatv y) { return x + y; }
 \end{lstlisting}
-    \item 注目部分(e.g., 最内ループ)に以下を埋め込みアセンブリ言語の中で検索
+\item 注目部分(e.g., 最内ループ)に以下を埋め込みアセンブリ言語の中で検索
   (\texttt{asm volatile("...")}は"..."をアセンブリに埋め込む構文).
 \begin{lstlisting}
 @\ao{\texttt{asm volatile("\# start my loop");}}@
@@ -2177,6 +2390,7 @@ gcc -S -O3 -mavx512f file.c
 \item \texttt{-mavx512f}はAVX-512Fを使うことを指示
 \end{itemize}
 \end{frame}
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \iffalse
@@ -2188,14 +2402,14 @@ gcc -S -O3 -mavx512f file.c
 floatv v = @\ao{\texttt\{}@ 0,10,20,30,40,50,60,70 @\ao{\texttt\}}@;
 \end{lstlisting}
 
-\item 8要素を明示的に指定する関数
+\item 8要素を明示的に指定するintrinsics関数
 \begin{lstlisting}
 floatv v = @\ao{\texttt{\_mm256\_set\_ps}}(0,10,20,30,40,50,60,70);
 /* これで v = {0,10,20,30,40,50,60,70} */
 \end{lstlisting}
 方法1と異なり初期化以外の場所でも使える.
 
-\item スカラ一個から全要素同一のベクトルを作る
+\item スカラ一個から全要素同一のベクトルを作るintrinsics関数
 \begin{lstlisting}
 floatv v = @\ao{\texttt{\_mm256\_set1\_ps}}(30);
 /* これで v = {30,30,30,30,30,...} */
@@ -2213,14 +2427,26 @@ floatv v = @\ao{\texttt{\_mm256\_set1\_ps}}(30);
 floatv v = @\ao{\texttt\{}@ 0,10,20,...,150 @\ao{\texttt\}}@;
 \end{lstlisting}
 
-\item 16要素を明示的に指定する関数
+\item 各要素を配列のようにセット
+\begin{lstlisting}
+floatv uniform(float u) {    
+  floatv v;
+  for (i = 0; i < 16; i++) {
+    @\ao{\tt v[i] =}@ u;
+  }
+  return v;
+}  
+\end{lstlisting}
+うまくすると全体が効率的なSIMD命令で実行される
+
+\item 16要素を明示的に指定するintrinsics関数
 \begin{lstlisting}
 floatv v = @\ao{\texttt{\_mm512\_set\_ps}}(0,10,20,...,150);
 /* これで v = {0,10,20,...,150} */
 \end{lstlisting}
 方法1と異なり変数初期化以外の場所でも使える.
 
-\item スカラ一個から全要素同一のベクトルを作る
+\item スカラ一個から全要素同一のベクトルを作るintrinsics関数
 \begin{lstlisting}
 floatv v = @\ao{\texttt{\_mm512\_set1\_ps}}(30);
 /* これで v = {30,30,30,30,30,...} */
@@ -2267,7 +2493,7 @@ floatv v = @\ao{\texttt{*}}@((floatv *)(&a[i]));
 /* これで v = {a[i],a[i+1], ...,a[i+15]} */     
 \end{lstlisting}
 
-\item 同じことを関数で
+\item 同じことをするintrinsics関数
 \begin{lstlisting}
 float * a;
      ...
@@ -2338,7 +2564,7 @@ float * a;
 \begin{frame}[fragile]
 \frametitle{ベクトル型データからスカラ型データを取り出す方法あれこれ}
 \begin{itemize}
-\item 配列風の構文
+\item 配列のように要素をアクセス
 \begin{lstlisting}
 floatv v;
 float x = v@\ao{\texttt{[3]}}@;
@@ -2353,7 +2579,7 @@ floatv v;
 /* これで a[i],a[i+1], ...,a[i+15] <- {v[0],v[1],...,v[15]} */
 \end{lstlisting}
 
-\item 同じことを関数で
+\item 同じことをするintrinsics関数
 \begin{lstlisting}
 float * a;
      ...
@@ -2448,6 +2674,7 @@ float * a;
 \end{itemize}
 \end{frame}
 
+\iffalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \subsection{例題のSIMD化}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -2794,21 +3021,28 @@ if (@$E$@) {
 \end{itemize}
 \end{frame}
 
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile]
   \frametitle{まとめ}
 
   \begin{itemize}
-  \item 最大性能 $=$ \ao{SIMD並列性} $\times$ スーパスカラ並列性
-    $\times$ \ao{マルチコア並列性} $\times$ マルチノード並列性
+  \item GPUの最大性能 $=$
+    \ao{コア内の多数のスレッドの並列性}
+    $\times$ \ao{マルチコア並列性}
+  \item CPUの最大性能 $=$
+    \ao{1スレッド内のSIMD命令利用}
+    $\times$ \ao{1スレッド内の複数命令同時実行(ILP)}
+    $\times$ \ao{1コア内の少数のスレッドの並列性}
+    $\times$ \ao{マルチコア並列性}
   \item 現状 それぞれのマスターが必要:
     \begin{itemize}
     \item SIMD : ベクトル型, intrinsics
-    \item マルチコア : OpenMP {\tt \#pragma omp parallel} ($+$ {\tt for})
-    \item マルチノード : MPI (先週)
-    \item スーパスカラ並列性 : 意識しなくてもある程度は勝手に.
-      時として意識必要(説明せず)
+    \item ILP : 意識しなくてもある程度は勝手に. 時として意識必要
+    \item CPUマルチコア : OpenMP {\tt \#pragma omp parallel} ($+$ {\tt for})
+    \item GPUマルチコア : OpenMP {\tt \#pragma omp target teams} ($+$ {\tt distribute})
+    \item マルチノード : MPI
     \end{itemize}
   \item 普遍的に重要なこと: 何が起きているかの理解
   \item 「期待できる性能」の正しい理解
