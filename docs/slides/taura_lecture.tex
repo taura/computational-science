@@ -1254,7 +1254,7 @@ interact_all(n, particle *p) {
         \item $\Rightarrow$ どこをGPUで実行(にオフロード)するかを指定する必要がある
           (\ao{\tt \#pragma omp target})
         \end{itemize}
-      \item CPU$\leftarrow$GPU間でメモリが(ハードウェアで)共有されているわけではない
+      \item CPU$\leftrightarrow$GPU間でメモリが(ハードウェアで)共有されているわけではない
         \begin{itemize}
         \item $\Rightarrow$ データを明示的に移動させる必要がある(場合がある)
           (\ao{\tt map}節)

@@ -16,7 +16,7 @@ run_bibtex_and_latex_twice:=n
 tex := $(wildcard *.tex)
 # svg files
 svg_svg := 
-svg_svg += $(wildcard svg/latency.svg)
+#svg_svg += $(wildcard svg/latency.svg)
 #svg_svg += $(wildcard svg/*.svg)
 # layered svg files
 #lsvg_svg := $(wildcard lsvg/*.svg)
