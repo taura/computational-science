@@ -51,3 +51,85 @@ rel="noopener">講義スライド</a>.
 講義資料はITC-LMSにもアップする予定ですが,
 確定するまではこちらで更新します</li>
 </ul>
+<h1 data-number="3"
+id="wisteria-バッチスクリプトの設定チートシート"><span
+class="header-section-number">3</span> Wisteria
+バッチスクリプトの設定チートシート</h1>
+<ul>
+<li>参考情報
+<ul>
+<li>Aquarius のノード : Intel CPU 72コア + 8 GPU (1 GPUあたり9コア)</li>
+<li>Odyssey のノード : Fujitsu A64FX 48コア</li>
+</ul></li>
+<li>推奨値
+<ul>
+<li>Aquarius用</li>
+</ul>
+<pre><code>#PJM -L rscgrp=lecture-a   # またはlecture7-a
+#PJM -L elapse=0:01:00     # 必要に応じて伸ばす
+#PJM -L gpu=1
+#PJM --omp thread=9
+#PJM -g gt47
+#PJM -j
+#PJM -o 0output.txt</code></pre>
+<ul>
+<li>Odyssey用推奨値</li>
+</ul>
+<pre><code>#PJM -L rscgrp=lecture-o   # またはlecture7-o
+#PJM -L elapse=0:01:00     # 必要に応じて伸ばす
+#PJM -L node=1
+#PJM --omp thread=48
+#PJM -g gt47
+#PJM -j
+#PJM -o 0output.txt</code></pre></li>
+<li>よく使う設定と妥当な値
+<ul>
+<li><font color=blue><code>#PJM -L rscgrp=...</code></font>
+<ul>
+<li><font color=blue><code>#PJM -L rscgrp=lecture-a</code></font> :
+Aquarius (Intel CPU + NVIDIA GPU)</li>
+<li><font color=blue><code>#PJM -L rscgrp=lecture7-a</code></font> :
+同上. 授業中</li>
+<li><font color=blue><code>#PJM -L rscgrp=lecture-o</code></font> :
+Odyssey (Fujitsu A64FX)</li>
+<li><font color=blue><code>#PJM -L rscgrp=lecture7-o</code></font> :
+同上. 授業中</li>
+</ul></li>
+<li><font color=blue><code>#PJM -L gpu=...</code></font> : Aquarius
+のときに必須 (<font color=blue>1-4</font>), Odysseyでは無効</li>
+<li><font color=blue><code>#PJM --omp thread=...</code></font> :
+使うコア数を指定するが,
+これは最大値にしておいて<code>OMP_NUM_THREADS</code>で調節するのが推奨
+<ul>
+<li>Aquarius : <font color=blue>1 - 「gpu= で指定した数」 x 9</font> (=
+72/8). 有効な設定の例
+<ul>
+<li><font color=blue><code>#PJM -L gpu=1</code>
+<code>#PJM --omp thread=9</code></font></li>
+<li><font color=blue><code>#PJM -L gpu=2</code>
+<code>#PJM --omp thread=18</code></font></li>
+<li><font color=blue><code>#PJM -L gpu=3</code>
+<code>#PJM --omp thread=27</code></font></li>
+<li><font color=blue><code>#PJM -L gpu=4</code>
+<code>#PJM --omp thread=36</code></font></li>
+</ul></li>
+<li>Odyssey : <font color=blue>1 - 48</font>
+<ul>
+<li><font color=blue><code>#PJM --omp thread=48</code></font></li>
+</ul></li>
+</ul></li>
+<li><font color=blue><code>#PJM -L node=1</code></font> :
+Aquariusでは無効(エラー), Odysseyでは必須. この授業では1でOK</li>
+<li><font color=blue><code>#PJM -L elapse=0:01:23</code></font> :
+制限時間. 左記は1分23秒. 本授業のキューでは15分
+(<font color=blue>0:15:00</font>)まで.
+可能な範囲で短い時間を指定すれば早く実行されるかもしれない</li>
+<li><font color=blue><code>#PJM -g gt47</code></font> :
+この授業では必ずこれ(<code>gt47</code>)を指定</li>
+<li><font color=blue><code>#PJM -o 0output.txt</code></font> :
+標準入力のファイル名
+(指定しないとジョブのたびに新しいファイルができて煩わしいので決めておくのを推奨)</li>
+<li><font color=blue><code>#PJM -j</code></font> :
+標準入力と出力を1つのファイルにする (上記と同じ理由で推奨)</li>
+</ul></li>
+</ul>
