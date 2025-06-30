@@ -376,12 +376,15 @@ $ @\ao{\tt OMP\_NUM\_THREADS=4}@ ./a.out  # use 4 threads
 \end{lstlisting}
 \fi
 
+\iffalse
 \item 指定しなければノードのコア数.
   ただし, Oakbridge CXのジョブスクリプトでは,
   以下の節の$x$部分でそれを指定できる
 \begin{lstlisting}
 #PJM --omp thread=@$x$@
 \end{lstlisting} %$
+\fi
+
 \end{itemize}
 \end{frame}
 
@@ -3050,7 +3053,8 @@ if (@$E$@) {
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\iffalse
 \begin{frame}[fragile]
   \frametitle{課題}
   \begin{itemize}
@@ -3082,6 +3086,7 @@ if (@$E$@) {
     \end{itemize}
   \end{itemize}
 \end{frame}
+\fi
 
 \end{document}
 
