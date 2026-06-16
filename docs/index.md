@@ -10,12 +10,14 @@
 * <font color=blue>最初の青字部分がアナウンス日</font> です．
 * <font color=red>授業をしながら更新するのでしょっちゅうreloadしてください</font>．
 
-* <font color=blue>2024/07/07</font> 田浦分課題仕様
+<!--
+* <font color=blue>2026/06/29</font> 田浦分課題仕様
   * 適当な難度(cs03, cs05以上)の課題を設定
   * 並列化, SIMD化などされていないベースラインコードを書くか, シンプルなものが入手可能なら入手する, AIで生成しても良い
   * その上以下のどちらかまたは両方を, 方法と測定結果とともにまとめよ.
     * CPUでの性能向上 --- SIMD化, 命令レベル並列性向上, マルチコア向上
     * GPUでの性能向上
+-->	
 * <font color=blue>2026/06/16</font> 2025年度版HP開設
 * <font color=blue>2026/06/16</font> 6/22の予定
   * [説明](slides/pdf/taura_lecture.pdf)
