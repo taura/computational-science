@@ -24,18 +24,20 @@
   * 演習では, Wisteria スーパーコンピュータ (Aquarius : Intel CPU + NVIDIA GPU) を用います
   * 本格的な演習は SSH + コマンドラインで行いますが, 説明, 例題, そのコンパイルや実行のために Jupyter 環境を用います
   * [https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/](https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/) にアクセスして, [Wisteria 利用支援ポータル](https://wisteria-www.cc.u-tokyo.ac.jp/cgi-bin/hpcportal.ja/index.cgi) にログインするために配布されたIDなどを用いてログインしてみてください
-* 配布コードを取得するために以下を SSH + コマンドライン, Jupyter terminalなどで実行してください
+* [教材](https://github.com/taura/computational-science-material) を取得してください
+* 実行したコードを計算ノードで実行するために Lustre のディレクトリに展開する必要があります
+* 一方でJupyterからアクセスするためには `~/.notebook` の下でないといけないという制約があるため以下のようにします
 ```
 ln -s /work/gt69/$USER ~/.notebook/lustre
 cd ~/.notebook/lustre
-git clone https://github.com/taura/computational-science-code.git
+git clone https://github.com/taura/computational-science-material.git
 ```
 * Pythonのnotebookのセルに以下を書いて実行 (SHIFT + ENTER) しても同じことができます
 ```
 %%bash
 ln -s /work/gt69/$USER ~/.notebook/lustre
 cd ~/.notebook/lustre
-git clone https://github.com/taura/computational-science-code.git
+git clone https://github.com/taura/computational-science-material.git
 ```
 
 # スライド・資料

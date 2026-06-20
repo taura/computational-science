@@ -38,12 +38,16 @@ href="https://wisteria-www.cc.u-tokyo.ac.jp/cgi-bin/hpcportal.ja/index.cgi"
 target="_blank" rel="noopener">Wisteria 利用支援ポータル</a>
 にログインするために配布されたIDなどを用いてログインしてみてください</li>
 </ul></li>
-<li>配布コードを取得するために以下を SSH + コマンドライン, Jupyter
-terminalなどで実行してください</li>
+<li><a href="https://github.com/taura/computational-science-material"
+target="_blank" rel="noopener">教材</a> を取得してください</li>
+<li>実行したコードを計算ノードで実行するために Lustre
+のディレクトリに展開する必要があります</li>
+<li>一方でJupyterからアクセスするためには <code>~/.notebook</code>
+の下でないといけないという制約があるため以下のようにします</li>
 </ul>
 <pre><code>ln -s /work/gt69/$USER ~/.notebook/lustre
 cd ~/.notebook/lustre
-git clone https://github.com/taura/computational-science-code.git</code></pre>
+git clone https://github.com/taura/computational-science-material.git</code></pre>
 <ul>
 <li>Pythonのnotebookのセルに以下を書いて実行 (SHIFT + ENTER)
 しても同じことができます</li>
@@ -51,7 +55,7 @@ git clone https://github.com/taura/computational-science-code.git</code></pre>
 <pre><code>%%bash
 ln -s /work/gt69/$USER ~/.notebook/lustre
 cd ~/.notebook/lustre
-git clone https://github.com/taura/computational-science-code.git</code></pre>
+git clone https://github.com/taura/computational-science-material.git</code></pre>
 <h1 data-number="2" id="スライド資料"><span
 class="header-section-number">2</span> スライド・資料</h1>
 <ul>
