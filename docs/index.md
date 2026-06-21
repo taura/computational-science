@@ -19,13 +19,16 @@
     * GPUでの性能向上
 -->	
 * <font color=blue>2026/06/16</font> 2025年度版HP開設
-* <font color=blue>2026/06/16</font> 6/22の予定
   * [説明スライド](slides/pdf/taura_lecture.pdf)
-  * [計算科学概論（田浦分）の教材 (github)](https://github.com/taura/computational-science-material) を取得してください
+  * [計算科学概論（田浦分）の教材 (github)](https://github.com/taura/computational-science-material)
   * 演習では, Wisteria スーパーコンピュータ (Aquarius : Intel CPU + NVIDIA GPU) を用います
   * 本格的な演習は SSH + コマンドラインで行いますが, 説明, 例題, そのコンパイルや実行のために Jupyter 環境を用います
-  * [https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/](https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/) にアクセスして, [Wisteria 利用支援ポータル](https://wisteria-www.cc.u-tokyo.ac.jp/cgi-bin/hpcportal.ja/index.cgi) にログインするために配布されたIDなどを用いてログインしてください
-* 教材の使い方は、上記 github レポジトリの [README.md](https://github.com/taura/computational-science-material/blob/main/README.md) を読んで下さい
+* <font color=blue>2026/06/16</font> 6/22の予定
+  * [説明スライド](slides/pdf/taura_lecture.pdf) はじめに
+  * [計算科学概論（田浦分）の教材 (github)](https://github.com/taura/computational-science-material)を取得、演習
+  * [https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/](https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/) にアクセス
+    * [Wisteria 利用支援ポータル](https://wisteria-www.cc.u-tokyo.ac.jp/cgi-bin/hpcportal.ja/index.cgi) にログインするために配布されたIDを用いてログイン
+  * 教材の使い方は、上記 github レポジトリの [README.md](https://github.com/taura/computational-science-material/blob/main/README.md)
 
 # スライド・資料
 
