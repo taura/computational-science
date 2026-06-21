@@ -25,7 +25,10 @@ class="header-section-number">1</span> お知らせ</h1>
 <li><font color=blue>2026/06/16</font> 6/22の予定
 <ul>
 <li><a href="slides/pdf/taura_lecture.pdf" target="_blank"
-rel="noopener">説明</a></li>
+rel="noopener">説明スライド</a></li>
+<li><a href="https://github.com/taura/computational-science-material"
+target="_blank" rel="noopener">計算科学概論（田浦分）の教材 (github)</a>
+を取得してください</li>
 <li>演習では, Wisteria スーパーコンピュータ (Aquarius : Intel CPU +
 NVIDIA GPU) を用います</li>
 <li>本格的な演習は SSH + コマンドラインで行いますが, 説明, 例題,
@@ -36,36 +39,54 @@ rel="noopener">https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/</a>
 にアクセスして, <a
 href="https://wisteria-www.cc.u-tokyo.ac.jp/cgi-bin/hpcportal.ja/index.cgi"
 target="_blank" rel="noopener">Wisteria 利用支援ポータル</a>
-にログインするために配布されたIDなどを用いてログインしてみてください</li>
+にログインするために配布されたIDなどを用いてログインしてください</li>
 </ul></li>
-<li><a href="https://github.com/taura/computational-science-material"
-target="_blank" rel="noopener">教材</a> を取得してください</li>
-<li>実行したコードを計算ノードで実行するために Lustre
-のディレクトリに展開する必要があります</li>
-<li>一方でJupyterからアクセスするためには <code>~/.notebook</code>
-の下でないといけないという制約があるため以下のようにします</li>
+<li>教材の使い方は、上記 github レポジトリの <a
+href="https://github.com/taura/computational-science-material/blob/main/README.md"
+target="_blank" rel="noopener">README.md</a> を読んで下さい</li>
 </ul>
-<pre><code>ln -s /work/gt69/$USER ~/.notebook/lustre
-cd ~/.notebook/lustre
-git clone https://github.com/taura/computational-science-material.git</code></pre>
+<p><a name="#data_sharing"> </a></p>
+<h1 data-number="2" id="データ収集について"><span
+class="header-section-number">2</span> データ収集について</h1>
+<p>本講義では、AIチューターを備えたJupyterベースのプログラミング環境を提供しています。この環境では、以下の情報を記録しています</p>
 <ul>
-<li>Pythonのnotebookのセルに以下を書いて実行 (SHIFT + ENTER)
-しても同じことができます</li>
+<li><p>コードの編集・コンパイル・実行の履歴 (<code>%%writefile_</code>,
+<code>%%bash_</code>, <code>%%bash_submit</code> セル)</p></li>
+<li><p>AIへの質問およびその回答 (<code>%%hey</code> セル)</p></li>
+<li><p>出力結果およびエラーメッセージ</p></li>
+<li><p>これらのデータは、学生がどのように学習しているか、どこで困難に直面しているか、AIツールとどのようにやり取りしているかをより深く理解するために活用されます。</p></li>
+<li><p>それらを成績評価に使うことはありません。</p></li>
+<li><p>ただし、不正利用の確認に用いることはあります。何が不正かについては以下を参照。</p></li>
 </ul>
-<pre><code>%%bash
-ln -s /work/gt69/$USER ~/.notebook/lustre
-cd ~/.notebook/lustre
-git clone https://github.com/taura/computational-science-material.git</code></pre>
-<h1 data-number="2" id="スライド資料"><span
-class="header-section-number">2</span> スライド・資料</h1>
+<h1 data-number="3" id="研究利用への任意の許諾のお願い"><span
+class="header-section-number">3</span>
+研究利用への（任意の）許諾のお願い</h1>
+<p>さらに収集されたデータは、本人の許諾の元、以下の目的に使用される場合があります。</p>
+<ul>
+<li>講義資料および教育方法の改善</li>
+<li>学習支援ツールの開発・改善</li>
+<li>学習・教育に関する研究</li>
+</ul>
+<p>研究目的で利用する場合は、個人を特定できる情報を適切に削除または匿名化します。
+個人を特定できる情報を公開・公表することはありません。</p>
+<ul>
+<li>上記の研究目的での利用を許諾してもよい方はこの
+<a href="https://forms.cloud.microsoft/r/jfyGsyf25J">フォーム</a>
+から許諾の意志を送信して下さい。</li>
+<li>許諾するか否かは任意です（指導方法の改善のために協力いただけることを希望します）。</li>
+<li>同意しない場合でも成績評価やその他の講義上の扱いにおいて不利益を受けることはありません。</li>
+</ul>
+<p>また、後から同じフォームを再送することで、同意を撤回することもできます。</p>
+<h1 data-number="4" id="スライド資料"><span
+class="header-section-number">4</span> スライド・資料</h1>
 <ul>
 <li><a href="slides/pdf/taura_lecture.pdf" target="_blank"
 rel="noopener">講義スライド</a>. 講義資料はUTOLにもアップする予定ですが,
 確定するまではこちらで更新します</li>
 </ul>
-<h1 data-number="3"
+<h1 data-number="5"
 id="wisteria-バッチスクリプトの設定チートシート"><span
-class="header-section-number">3</span> Wisteria
+class="header-section-number">5</span> Wisteria
 バッチスクリプトの設定チートシート</h1>
 <ul>
 <li>参考情報

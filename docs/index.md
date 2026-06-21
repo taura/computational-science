@@ -20,25 +20,44 @@
 -->	
 * <font color=blue>2026/06/16</font> 2025年度版HP開設
 * <font color=blue>2026/06/16</font> 6/22の予定
-  * [説明](slides/pdf/taura_lecture.pdf)
+  * [説明スライド](slides/pdf/taura_lecture.pdf)
+  * [計算科学概論（田浦分）の教材 (github)](https://github.com/taura/computational-science-material) を取得してください
   * 演習では, Wisteria スーパーコンピュータ (Aquarius : Intel CPU + NVIDIA GPU) を用います
   * 本格的な演習は SSH + コマンドラインで行いますが, 説明, 例題, そのコンパイルや実行のために Jupyter 環境を用います
-  * [https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/](https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/) にアクセスして, [Wisteria 利用支援ポータル](https://wisteria-www.cc.u-tokyo.ac.jp/cgi-bin/hpcportal.ja/index.cgi) にログインするために配布されたIDなどを用いてログインしてみてください
-* [教材](https://github.com/taura/computational-science-material) を取得してください
-* 実行したコードを計算ノードで実行するために Lustre のディレクトリに展開する必要があります
-* 一方でJupyterからアクセスするためには `~/.notebook` の下でないといけないという制約があるため以下のようにします
-```
-ln -s /work/gt69/$USER ~/.notebook/lustre
-cd ~/.notebook/lustre
-git clone https://github.com/taura/computational-science-material.git
-```
-* Pythonのnotebookのセルに以下を書いて実行 (SHIFT + ENTER) しても同じことができます
-```
-%%bash
-ln -s /work/gt69/$USER ~/.notebook/lustre
-cd ~/.notebook/lustre
-git clone https://github.com/taura/computational-science-material.git
-```
+  * [https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/](https://wisteria08.cc.u-tokyo.ac.jp:8000/jupyterhub/) にアクセスして, [Wisteria 利用支援ポータル](https://wisteria-www.cc.u-tokyo.ac.jp/cgi-bin/hpcportal.ja/index.cgi) にログインするために配布されたIDなどを用いてログインしてください
+* 教材の使い方は、上記 github レポジトリの [README.md](https://github.com/taura/computational-science-material/blob/main/README.md) を読んで下さい
+
+<a name="#data_sharing"> </a>
+
+# データ収集について
+
+本講義では、AIチューターを備えたJupyterベースのプログラミング環境を提供しています。この環境では、以下の情報を記録しています
+
+- コードの編集・コンパイル・実行の履歴 (`%%writefile_`, `%%bash_`, `%%bash_submit` セル)
+- AIへの質問およびその回答 (`%%hey` セル)
+- 出力結果およびエラーメッセージ
+
+- これらのデータは、学生がどのように学習しているか、どこで困難に直面しているか、AIツールとどのようにやり取りしているかをより深く理解するために活用されます。
+- それらを成績評価に使うことはありません。
+- ただし、不正利用の確認に用いることはあります。何が不正かについては以下を参照。
+
+# 研究利用への（任意の）許諾のお願い
+
+さらに収集されたデータは、本人の許諾の元、以下の目的に使用される場合があります。
+
+- 講義資料および教育方法の改善
+- 学習支援ツールの開発・改善
+- 学習・教育に関する研究
+
+研究目的で利用する場合は、個人を特定できる情報を適切に削除または匿名化します。
+個人を特定できる情報を公開・公表することはありません。
+
+- 上記の研究目的での利用を許諾してもよい方はこの <a href="https://forms.cloud.microsoft/r/jfyGsyf25J">フォーム</a> から許諾の意志を送信して下さい。
+- 許諾するか否かは任意です（指導方法の改善のために協力いただけることを希望します）。
+- 同意しない場合でも成績評価やその他の講義上の扱いにおいて不利益を受けることはありません。
+
+また、後から同じフォームを再送することで、同意を撤回することもできます。
+
 
 # スライド・資料
 
