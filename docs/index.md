@@ -2,7 +2,9 @@
 
 # 計算科学概論<br />田浦健次朗 {.unnumbered}
 
-* 計算科学概論 [講義全体のホームページ](http://www.compsci-alliance.jp/)
+* 計算科学概論 
+  * [講義全体のホームページ](http://www.compsci-alliance.jp/)
+  * [UTOLコースページ](https://utol.ecc.u-tokyo.ac.jp/lms/course?idnumber=2026_0352_FEN-AP4901L1_01)
 
 # お知らせ
 
